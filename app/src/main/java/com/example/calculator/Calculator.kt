@@ -97,7 +97,7 @@ fun Calculator(
 
                     Text(
                         text = answerString,
-                        style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.SemiBold),
+                        style = TextStyle(fontSize = 48.sp, fontWeight = FontWeight.SemiBold),
                         color = Color(0xFFA494AC)
                     )
                 }
