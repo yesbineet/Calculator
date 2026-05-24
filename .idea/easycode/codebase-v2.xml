@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="com.obiscr.chatgpt.settings.EasyCodeState">
+    <option name="projectFiles" value="$PROJECT_DIR$/app/src/androidTest/java/com/example/calculator/ExampleInstrumentedTest.kt;C:/Users/Binay/AndroidStudioProjects/Calculator/app/src/main/java/com/example/calculator/ui/theme/Color.kt;C:/Users/Binay/AndroidStudioProjects/Calculator/app/src/main/java/com/example/calculator/ui/theme/Theme.kt;C:/Users/Binay/AndroidStudioProjects/Calculator/app/src/main/java/com/example/calculator/ui/theme/Type.kt;C:/Users/Binay/AndroidStudioProjects/Calculator/app/src/main/java/com/example/calculator/Calculator.kt;C:/Users/Binay/AndroidStudioProjects/Calculator/app/src/main/java/com/example/calculator/CalUtil.kt;C:/Users/Binay/AndroidStudioProjects/Calculator/app/src/main/java/com/example/calculator/MainActivity.kt;C:/Users/Binay/AndroidStudioProjects/Calculator/app/src/test/java/com/example/calculator/ExampleUnitTest.kt;C:/Users/Binay/AndroidStudioProjects/Calculator/app/build.gradle.kts;C:/Users/Binay/AndroidStudioProjects/Calculator/build.gradle.kts;C:/Users/Binay/AndroidStudioProjects/Calculator/settings.gradle.kts" />
+  </component>
+</project>

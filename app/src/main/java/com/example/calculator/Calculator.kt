@@ -1,44 +1,39 @@
 package com.example.calculator
 
-import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import android.graphics.BlurMaskFilter
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithContent
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-
+import com.example.calculator.CalUtil.calculate
 
 fun buttonList() = listOf(
     "%","÷","*","Back",
@@ -49,7 +44,12 @@ fun buttonList() = listOf(
 )
 
 @Composable
-fun Calculator(modifier: Modifier = Modifier) {
+fun Calculator(
+    modifier: Modifier = Modifier,
+) {
+
+    var inputString by remember { mutableStateOf("") }
+    var answerString by remember { mutableStateOf("") }
 
     Column(
         modifier = modifier
@@ -63,7 +63,6 @@ fun Calculator(modifier: Modifier = Modifier) {
                 .padding(top = 40.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
                 .fillMaxWidth()
                 .height(200.dp)
-                // 1. Apply the shadow FIRST
                 .shadow(
                     elevation = 10.dp,
                     shape = RoundedCornerShape(24.dp),
@@ -78,7 +77,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                 horizontalAlignment = Alignment.End
             ) {
                 Text(
-                    text = "123+123",
+                    text = inputString,
                     style = TextStyle(fontSize = 30.sp, color = Color.Gray),
                     color = Color(0xFFA494AC)
                 )
@@ -97,7 +96,7 @@ fun Calculator(modifier: Modifier = Modifier) {
                     )
 
                     Text(
-                        text = "10,000",
+                        text = answerString,
                         style = TextStyle(fontSize = 50.sp, fontWeight = FontWeight.SemiBold),
                         color = Color(0xFFA494AC)
                     )
@@ -120,7 +119,25 @@ fun Calculator(modifier: Modifier = Modifier) {
             val buttons = buttonList()
 
             items(buttons.size) { index ->
-                CalculatorButton(buttons[index])
+                CalculatorButton(
+                    btn = buttons[index],
+                    onButtonClick = { buttonSymbol ->
+                        println(buttonSymbol)
+
+                        when (buttonSymbol) {
+                            "=" -> {
+                                answerString = calculate(inputString)
+                            }
+                            "AC" -> {
+                                inputString = ""
+                                answerString = ""
+                            }
+                            else -> {
+                                inputString += buttonSymbol
+                            }
+                        }
+                    }
+                )
             }
         }
     }
@@ -129,11 +146,12 @@ fun Calculator(modifier: Modifier = Modifier) {
 @Composable
 fun CalculatorButton(
     btn: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onButtonClick: (String) -> Unit
 ) {
 
     FloatingActionButton(
-        onClick = { },
+        onClick = { onButtonClick(btn) },
         modifier = modifier.size(70.dp),
         shape = RoundedCornerShape(28.dp),
         contentColor = Color(0xFFA494AC),
@@ -165,3 +183,101 @@ fun getColor(btn: String): Color {
     }
 }
 
+
+
+
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun CalculatorPreviewLightInitial() {
+//    Calculator(
+//        state = CalculatorState(expression = "", result = "0")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun CalculatorPreviewDarkInitial() {
+//    Calculator(
+//        state = CalculatorState(expression = "", result = "0")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun CalculatorPreviewLightInput() {
+//    Calculator(
+//        state = CalculatorState(expression = "123", result = "123")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun CalculatorPreviewDarkInput() {
+//    Calculator(
+//        state = CalculatorState(expression = "123", result = "123")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun CalculatorPreviewLightOperation() {
+//    Calculator(
+//        state = CalculatorState(expression = "123 + ", result = "123")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun CalculatorPreviewDarkOperation() {
+//    Calculator(
+//        state = CalculatorState(expression = "123 + ", result = "123")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun CalculatorPreviewLightResult() {
+//    Calculator(
+//        state = CalculatorState(expression = "123 + 456", result = "579")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun CalculatorPreviewDarkResult() {
+//    Calculator(
+//        state = CalculatorState(expression = "123 + 456", result = "579")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun CalculatorPreviewLightError() {
+//    Calculator(
+//        state = CalculatorState(expression = "5 / 0", result = "Error")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun CalculatorPreviewDarkError() {
+//    Calculator(
+//        state = CalculatorState(expression = "5 / 0", result = "Error")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true)
+//@Composable
+//fun CalculatorPreviewLightDecimal() {
+//    Calculator(
+//        state = CalculatorState(expression = "3.14 * 2", result = "6.28")
+//    )
+//}
+//
+//@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun CalculatorPreviewDarkDecimal() {
+//    Calculator(
+//        state = CalculatorState(expression = "3.14 * 2", result = "6.28")
+//    )
+//}
