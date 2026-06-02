@@ -1,5 +1,4 @@
-package com.example.calculator
-import com.bineet.calcme.R
+package com.bineet.calcme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -15,8 +14,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.clipPath
@@ -29,9 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.CornerRadius
+import com.bineet.calcme.R
 
 fun Modifier.innerShadow(
     color: Color = Color.Black.copy(alpha = 0.15f),
@@ -40,12 +40,13 @@ fun Modifier.innerShadow(
 ) = drawWithContent {
     drawContent()
     val rect = Rect(Offset.Zero, size)
-    val paint = Paint().apply {
-        this.color = color
-        this.isAntiAlias = true
-    }
     val path = Path().apply {
-        addRoundRect(androidx.compose.ui.geometry.RoundRect(rect, androidx.compose.ui.geometry.CornerRadius(cornersRadius.toPx())))
+        addRoundRect(
+            androidx.compose.ui.geometry.RoundRect(
+                rect,
+                CornerRadius(cornersRadius.toPx())
+            )
+        )
     }
 
     clipPath(path) {
@@ -121,21 +122,18 @@ fun Calculator(modifier: Modifier = Modifier) {
                         tint = if (isDark) Color.White else Color(0xFFFFDF22)
                     )
                 },
-
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = Color.Black,
                     checkedTrackColor = Color(0xFFEAEAFF),
                     checkedBorderColor = Color(0xFFEAEAFF).copy(alpha = 0.5f),
                     checkedIconColor = Color.White,
-
-                // Colors when the switch is OFF (Light Mode)
-                uncheckedThumbColor = Color.White,
-                uncheckedTrackColor = Color(0xFF1E1A24),
-                uncheckedBorderColor = Color(0xFF1E1A24).copy(alpha = 0.3f),
-                uncheckedIconColor = Color(0xFFFFDF22))
+                    uncheckedThumbColor = Color.White,
+                    uncheckedTrackColor = Color(0xFF1E1A24),
+                    uncheckedBorderColor = Color(0xFF1E1A24).copy(alpha = 0.3f),
+                    uncheckedIconColor = Color(0xFFFFDF22)
+                )
             )
         }
-
 
         Box(
             modifier = Modifier
@@ -157,7 +155,10 @@ fun Calculator(modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = inputString,
-                    style = TextStyle(fontSize = (screenWidth.value / 12).sp, color = if (isDark) Color.White else Color(0xFF54537D))
+                    style = TextStyle(
+                        fontSize = (screenWidth.value / 12).sp,
+                        color = if (isDark) Color.White else Color(0xFF54537D)
+                    )
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
@@ -165,8 +166,22 @@ fun Calculator(modifier: Modifier = Modifier) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("=", style = TextStyle(fontSize = (screenWidth.value / 8).sp, fontWeight = FontWeight.Bold, color = if (isDark) Color.White else Color(0xFF54537D)))
-                    Text(answerString, style = TextStyle(fontSize = (screenWidth.value / 8).sp, fontWeight = FontWeight.Bold, color = if (isDark) Color.White else Color(0xFF54537D)))
+                    Text(
+                        "=",
+                        style = TextStyle(
+                            fontSize = (screenWidth.value / 8).sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isDark) Color.White else Color(0xFF54537D)
+                        )
+                    )
+                    Text(
+                        answerString,
+                        style = TextStyle(
+                            fontSize = (screenWidth.value / 8).sp,
+                            fontWeight = FontWeight.Bold,
+                            color = if (isDark) Color.White else Color(0xFF54537D)
+                        )
+                    )
                 }
             }
         }
@@ -187,9 +202,13 @@ fun Calculator(modifier: Modifier = Modifier) {
                     isDark = isDark,
                     onClick = { char ->
                         when (char) {
-                            "AC" -> { inputString = ""; answerString = "" }
+                            "AC" -> {
+                                inputString = ""
+                                answerString = ""
+                            }
                             "Back" -> if (inputString.isNotEmpty()) inputString = inputString.dropLast(1)
-                            "=" -> if (inputString.isNotEmpty()) answerString = CalculatorLogic.calculate(inputString)
+                            "=" -> if (inputString.isNotEmpty()) answerString =
+                                CalculatorLogic.calculate(inputString)
                             else -> inputString += char
                         }
                     },
@@ -199,9 +218,9 @@ fun Calculator(modifier: Modifier = Modifier) {
         }
 
         Spacer(modifier = Modifier.height(12.dp))
-
     }
 }
+
 @Composable
 fun CalculatorButton(
     btn: String,
@@ -225,25 +244,22 @@ fun CalculatorButton(
         modifier = modifier
             .fillMaxWidth()
             .aspectRatio(1f)
-            // 1. DARK SHADOW (Bottom-Right)
             .shadow(
                 elevation = if (isPressed) 2.dp else 6.dp,
                 shape = RoundedCornerShape(33.dp),
                 spotColor = if (isDark) Color.Black else Color(0xFF9E9EBE).copy(alpha = 0.6f),
                 ambientColor = if (isDark) Color.Black else Color(0xFF9E9EBE).copy(alpha = 0.4f)
             )
-            // 2. LIGHT HIGHLIGHT (Top-Left)
             .drawBehind {
                 if (!isPressed) {
                     val highlightColor = if (isDark) {
-                        Color.White.copy(alpha = 0.08f) // Subtle glow for dark mode
+                        Color.White.copy(alpha = 0.08f)
                     } else {
-                        Color.White.copy(alpha = 1f)    // Bright light for light mode
+                        Color.White.copy(alpha = 1f)
                     }
 
                     drawRoundRect(
                         color = highlightColor,
-                        // Offset by -4 to push the light to the top-left corner
                         topLeft = Offset(-4f, -4f),
                         size = size,
                         cornerRadius = CornerRadius(33.dp.toPx())
@@ -266,7 +282,6 @@ fun CalculatorButton(
             },
         contentAlignment = Alignment.Center
     ) {
-        // Removed shadowElevation from Surface to prevent it from overlapping our custom shadow
         Surface(
             modifier = Modifier.fillMaxSize(),
             shape = RoundedCornerShape(33.dp),
@@ -296,13 +311,17 @@ fun CalculatorButton(
 fun getColor(btn: String, isDark: Boolean): Color {
     return if (isDark) {
         when (btn) {
-            "=" -> Color(0xFF4E4271); "Back" -> Color(0xFFF5747A)
-            "%", "÷", "×", "-", "+", "/" -> Color(0xFF1D1A26); else -> Color(0xFF17141C)
+            "=" -> Color(0xFF4E4271)
+            "Back" -> Color(0xFFF5747A)
+            "%", "÷", "×", "-", "+", "/" -> Color(0xFF1D1A26)
+            else -> Color(0xFF17141C)
         }
     } else {
         when (btn) {
-            "=" -> Color(0xFF515282); "Back" -> Color(0xFFF9C7C8)
-            "%", "÷", "×", "-", "+", "/" -> Color(0xFFDAD9F8); else -> Color(0xFFE7E8FC)
+            "=" -> Color(0xFF515282)
+            "Back" -> Color(0xFFF9C7C8)
+            "%", "÷", "×", "-", "+", "/" -> Color(0xFFDAD9F8)
+            else -> Color(0xFFE7E8FC)
         }
     }
 }
