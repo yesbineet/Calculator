@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.bineet.calcme"
+    namespace = "com.bineetshaw.calcme"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.bineet.calcme"
+        applicationId = "com.bineetshaw.calcme"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -53,6 +53,7 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.androidx.compose.material3)
     implementation(libs.core.splashscreen)
 
